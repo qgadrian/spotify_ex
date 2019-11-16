@@ -9,6 +9,7 @@ defmodule Spotify.Player.Device do
     volume_percent
   ]a
 
+  alias Spotify.Client
   use Spotify.Responder
   import Spotify.Helpers
 
