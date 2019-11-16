@@ -17,4 +17,11 @@ defmodule Spotify.Player.Device do
   end
 
   # TODO add url and request functions
+  def list_devices_url do
+    "https://api.spotify.com/v1/me/player/devices"
+  end
+
+  def list_devices(conn) do
+    conn |> Client.get(list_devices_url()) |> build_response()
+  end
 end
