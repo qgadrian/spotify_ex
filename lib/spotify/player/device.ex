@@ -14,15 +14,21 @@ defmodule Spotify.Player.Device do
   import Spotify.Helpers
 
   def build_response(body) do
-    to_struct(__MODULE__, body)
+    case body do
+      %{"devices" => devices} -> build_devices(devices)
+      booleans_or_error -> booleans_or_error
+    end
   end
 
-  # TODO add url and request functions
+  def build_devices(devices) do
+    Enum.map(devices, &to_struct(__MODULE__, &1))
+  end
+
   def list_devices_url do
     "https://api.spotify.com/v1/me/player/devices"
   end
 
   def list_devices(conn) do
-    conn |> Client.get(list_devices_url()) |> build_response()
+    conn |> Client.get(list_devices_url()) |> handle_response()
   end
 end
