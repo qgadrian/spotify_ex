@@ -19,6 +19,7 @@ defmodule Spotify.Player.PlaybackState do
   alias Spotify.Player.Device
   alias Spotify.Player.PlaybackState
 
+  # TODO this doesn't currently work. No data is returned from API.
   def get_playback_state(conn) do
     conn |> Client.get(get_playback_state_url()) |> handle_response()
   end
