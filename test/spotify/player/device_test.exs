@@ -4,7 +4,7 @@ defmodule Spotify.Player.DeviceTest do
   alias Spotify.Player.Device
 
   test "%Spotify.Player.Device{}" do
-    actual = ~w[id is_active is_private_session is_restricted name type volume_percent]a 
+    actual = ~w[id is_active is_private_session is_restricted name type volume_percent]a
 
     expected = %Device{} |> Map.from_struct() |> Map.keys()
 
@@ -34,7 +34,9 @@ defmodule Spotify.Player.DeviceTest do
         }
       ]
     }
+
     actual = Device.build_response(response)
+
     expected = [
       %Device{
         id: "123",
@@ -53,7 +55,7 @@ defmodule Spotify.Player.DeviceTest do
         name: "So-And-So's Computer",
         type: "mobile",
         volume_percent: 71
-      },
+      }
     ]
 
     assert actual == expected
