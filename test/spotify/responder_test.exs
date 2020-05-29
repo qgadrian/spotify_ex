@@ -26,7 +26,7 @@ defmodule Spotify.ResponderTest do
 
     test "with 400 status and a body" do
       expected = {:error, %{"error" => "foo"}}
-      assert GenericMock.some_endpoint(error()) == expected
+      assert GenericMock.some_endpoint(response_error()) == expected
     end
 
     test "with 429 too many requests, body and the header in downcase" do
@@ -37,6 +37,11 @@ defmodule Spotify.ResponderTest do
     test "with 429 too many requests, body and the header in uppercase" do
       assert GenericMock.some_endpoint(too_many_requests_error(99, "Retry-After")) ==
                too_many_requests_error_expect()
+    end
+
+    test "with a http client error" do
+      expected = {:error, %{"error" => :timeout}}
+      assert GenericMock.some_endpoint(error()) == expected
     end
   end
 
@@ -57,8 +62,12 @@ defmodule Spotify.ResponderTest do
      }}
   end
 
-  defp error do
+  defp response_error do
     {:error, %HTTPoison.Response{body: Poison.encode!(%{error: "foo"}), status_code: 400}}
+  end
+
+  defp error do
+    {:error, %HTTPoison.Error{reason: :timeout}}
   end
 
   defp success_empty_body do
