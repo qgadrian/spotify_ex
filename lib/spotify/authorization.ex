@@ -22,11 +22,11 @@ defmodule Spotify.Authorization do
          end
        end
   """
-  def url do
+  def url(state \\ "") when is_binary(state) do
     if scopes() != "" do
-      scoped_auth()
+      scoped_auth(state)
     else
-      scopeless_auth()
+      scopeless_auth(state)
     end
   end
 
@@ -38,16 +38,16 @@ defmodule Spotify.Authorization do
   end
 
   @doc false
-  def scoped_auth do
+  def scoped_auth(state) do
     "https://accounts.spotify.com/authorize?client_id=#{Spotify.client_id()}&response_type=code&redirect_uri=#{
       Spotify.callback_url()
-    }&scope=#{scopes()}"
+    }&scope=#{scopes()}&state=#{state}"
   end
 
   @doc false
-  def scopeless_auth do
+  def scopeless_auth(state) do
     "https://accounts.spotify.com/authorize?client_id=#{Spotify.client_id()}&response_type=code&redirect_uri=#{
       Spotify.callback_url()
-    }"
+    }&state=#{state}"
   end
 end

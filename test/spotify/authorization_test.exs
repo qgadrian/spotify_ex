@@ -11,7 +11,7 @@ defmodule Spotify.AuthorizationTest do
   describe ".url" do
     test "with scopes" do
       url =
-        "https://accounts.spotify.com/authorize?client_id=123&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A4000&scope=foo-bar%20baz-qux"
+        "https://accounts.spotify.com/authorize?client_id=123&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A4000&scope=foo-bar%20baz-qux&state="
 
       assert(Spotify.Authorization.url() == url)
     end
@@ -20,9 +20,18 @@ defmodule Spotify.AuthorizationTest do
       Application.put_env(:spotify_ex, :scopes, [])
 
       url =
-        "https://accounts.spotify.com/authorize?client_id=123&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A4000"
+        "https://accounts.spotify.com/authorize?client_id=123&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A4000&state="
 
       assert(Spotify.Authorization.url() == url)
+    end
+
+    test "with state" do
+      state = "a-state"
+
+      url =
+        "https://accounts.spotify.com/authorize?client_id=123&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A4000&scope=foo-bar%20baz-qux&state=a-state"
+
+      assert(Spotify.Authorization.url(state) == url)
     end
   end
 
