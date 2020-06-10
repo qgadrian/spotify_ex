@@ -19,6 +19,9 @@ defmodule Spotify.AuthenticationClient do
         %{"error_description" => error} ->
           raise(AuthenticationError, "The Spotify API responded with: #{error}")
 
+        %{"error" => error} ->
+          raise(AuthenticationError, "The Spotify API responded with: #{error}")
+
         success_response ->
           {:ok, Credentials.get_tokens_from_response(success_response)}
       end

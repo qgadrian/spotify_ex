@@ -3,17 +3,28 @@ defmodule HTTPoison.Response do
 end
 
 defmodule AuthenticationClientMock do
+  def post(%{"error" => _}) do
+    {:ok, failed_response("error")}
+  end
+
   def post(%{"error_description" => _}) do
-    {:ok, failed_response()}
+    {:ok, failed_response("error_description")}
   end
 
   def post(_params) do
     {:ok, successful_response()}
   end
 
-  defp failed_response do
+  defp failed_response("error_description") do
     %HTTPoison.Response{
       body: "{\"error\":\"invalid_client\",\"error_description\":\"Invalid client\"}",
+      status_code: 400
+    }
+  end
+
+  defp failed_response("error") do
+    %HTTPoison.Response{
+      body: "{\"error\":\"invalid_client\"}",
       status_code: 400
     }
   end

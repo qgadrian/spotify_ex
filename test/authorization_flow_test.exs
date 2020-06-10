@@ -19,10 +19,24 @@ defmodule OathAuthorizationFlow do
   end
 
   describe "posting to Spotify" do
-    test "A body with an error raises Authentication error" do
+    test "A body with an error without a description raises Authentication error" do
       with_mock Spotify.AuthRequest,
         post: fn _params ->
-          AuthenticationClientMock.post(%{"error_description" => "bad client id"})
+          AuthenticationClientMock.post(%{"error" => "invalid_client"})
+        end do
+        conn = conn(:post, "/authenticate", %{"code" => "valid"})
+        conn = Plug.Conn.fetch_cookies(conn)
+
+        assert_raise AuthenticationError, "The Spotify API responded with: invalid_client", fn ->
+          Authentication.authenticate(conn, conn.params)
+        end
+      end
+    end
+
+    test "A body with an error_description raises Authentication error" do
+      with_mock Spotify.AuthRequest,
+        post: fn _params ->
+          AuthenticationClientMock.post(%{"error_description" => "Invalid client"})
         end do
         conn = conn(:post, "/authenticate", %{"code" => "valid"})
         conn = Plug.Conn.fetch_cookies(conn)
